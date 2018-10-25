@@ -5,11 +5,54 @@
 <head>
   <title>PM 2.5 in Beijing 2010 - 2014</title>
   <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+  <link rel="stylesheet" href="css/skeleton.css" />
+  <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" href="css/style.css" />
   <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script type="text/javascript" src="js/draw.js"></script>
 </head>
+<body>
+  <div class="container">
+    <div class="row centered">
+      <div class="nine columns offset-by-two alpha">
+        <h1>Learn about PM 2.5 in Beijing 2010 - 2014</h1>
+      </div>
+    </div>
+    <div class="row centered">
+      <div class="six columns offset-by-three alpha">
+       <p class="desc centered">some description</p>
+      </div>
+    </div>
+    <div class="row">
+        <div class="ten columns offset-by-one alpha" id="chart">
 
+        </div>
+    </div>
+    <div class="row centered">
+      <div class="six columns offset-by-three alpha">
+        <input type="checkbox" name="temp" value="temp" id="temp" onclick="toggle()"> Temperature<br>
+        <div class="row centered tempfilter">
+          Lowest <input type="number" name="lowest"> <br>
+          Highest <input type="number" name="highest">
+        </div>
+        <input type="checkbox" name="windspd" value="windspd"> Wind Speed<br>
+        <div class="row centered windspdfilter">
+          Lowest <input type="number" name="lowest"> <br>
+          Highest <input type="number" name="highest">
+        </div>
+
+        <p>Wind direction</p>
+        <input type="checkbox" name="winddirection" value="ne"> North East
+        <input type="checkbox" name="winddirection" value="nw"> North West
+        <input type="checkbox" name="winddirection" value="sw"> South West
+        <input type="checkbox" name="winddirection" value="se"> South East
+      </div>
+
+    </div>
+
+
+  </div>
+</body>
 
 </html>
