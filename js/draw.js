@@ -11,13 +11,30 @@ function loadData() {
   })
 }
 
+
 function update(){
+  var arrays = [];
   var val = [];
-  $('input[type=checkbox]').each(function(){
-      if (this.checked) {
-        val.push(this.value)
-     }
-  })
+  if ($("input:checkbox:checked").length == 0){  // if there's no checked checkbox
+    val = data;
+  }else{
+    $('input[type=checkbox]').each(function(){
+        if (this.checked) {
+          var cbwd = this.value // assign a variable!!
+          var filtered_data = data.filter(function (d) {
+                        return d["cbwd"] == cbwd;
+                            });
+          arrays.push(filtered_data)
+       }
+    });
+
+// combine all the arrays together
+    for(i=0; i<arrays.length; i++){ 
+      val = val.concat(arrays[i])
+    }
+  }
+
+
   return val
 }
 
