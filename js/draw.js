@@ -5,8 +5,20 @@ $(document).ready(function () {
 
 function loadData() {
   d3.csv("data/data.csv",function(d){
+    data = d;
+    $('input[type=checkbox]').on("change",update);
 
   })
+}
+
+function update(){
+  var val = [];
+  $('input[type=checkbox]').each(function(){
+      if (this.checked) {
+        val.push(this.value)
+     }
+  })
+  return val
 }
 
 function toggle(){
@@ -15,6 +27,14 @@ function toggle(){
   }else{
     $(".tempfilter").css("display", "none");
   }
+
+  if($("#windspd").is(":checked")){
+    $(".windspdfilter").css("display", "block");
+  }else{
+    $(".windspdfilter").css("display", "none");
+  }
+
+
 }
 
 function drawCircleAnimation(){
