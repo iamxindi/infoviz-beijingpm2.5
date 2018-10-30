@@ -33,8 +33,8 @@
       <div class="six columns offset-by-three alpha">
         <input type="checkbox" name="temp" value="temp" id="temp" onclick="toggle()"> Temperature<br>
         <div class="row centered tempfilter">
-          Lowest <input type="range" min="-20" max="42" value="-10" id="temp_lowest" oninput="sliderChange(this.value)"> <span>50</span><br>
-          Highest <input type="range" min="-20" max="42" value="20" id="temp_highest" oninput="sliderChange(this.value)"> <span>50</span>
+          Lowest <input type="range" min="-20" max="42" value="-10" id="temp_lowest" oninput="sliderChange(this.id)"> <span class="temp_lowest">-10</span><br>
+          Highest <input type="range" min="-20" max="42" value="20" id="temp_highest" oninput="sliderChange(this.id)"> <span class="temp_highest">20</span>
         </div>
         <input type="checkbox" name="windspd" value="windspd" id="windspd" onclick="toggle()"> Wind Speed<br>
         <div class="row centered windspdfilter">

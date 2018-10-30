@@ -7,12 +7,14 @@ function loadData() {
   d3.csv("data/data.csv",function(d){
     data = d;
     // when checkbox changes, update
-    $('input[type=checkbox]').on("change",update);
+    $('input[type=winddirection]').on("change",update);
 
   })
 }
-function sliderChange(num){
-  console.log(num)
+function sliderChange(id){
+   value = document.getElementById(id).value
+   document.getElementsByClassName(id)[0].innerHTML = value
+   update();
 }
 
 function update(){
@@ -30,27 +32,27 @@ function update(){
                           return d["cbwd"] == cbwd;
                               });
             arrays.push(filtered_data)
+            for(i=0; i<arrays.length; i++){
+              val = val.concat(arrays[i])
+            }
+           }
           }
           if (this.name == "temp"){
-
-            var lowest = $("#lowest").val();
-            var highest = $("#highest").val();
-            val.push(lowest);
             console.log(val);
-            // var filtered_data = data.filter(function (d) {
-            //               return d["cbwd"] == cbwd;
-            //                   });
-            // arrays.push(filtered_data)
+
+            var lowest = document.getElementById("temp_lowest").value
+            var highest = document.getElementById("temp_highest").value
+
+            val = data.filter(function(d){
+              return d["TEMP"] >= lowest;
+            })
+            // console.log(lowest);
+            // console.log(highest);
           }
        }
-    });
+    )};
 
 // combine all the arrays together
-    for(i=0; i<arrays.length; i++){
-      val = val.concat(arrays[i])
-    }
-  }
-
 
   return val
 }
