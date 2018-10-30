@@ -6,11 +6,14 @@ $(document).ready(function () {
 function loadData() {
   d3.csv("data/data.csv",function(d){
     data = d;
+    // when checkbox changes, update
     $('input[type=checkbox]').on("change",update);
 
   })
 }
-
+function sliderChange(num){
+  console.log(num)
+}
 
 function update(){
   var arrays = [];
@@ -20,16 +23,30 @@ function update(){
   }else{
     $('input[type=checkbox]').each(function(){
         if (this.checked) {
-          var cbwd = this.value // assign a variable!!
-          var filtered_data = data.filter(function (d) {
-                        return d["cbwd"] == cbwd;
-                            });
-          arrays.push(filtered_data)
+          // for all the checked checkbox
+          if (this.name == "winddirection"){
+            var cbwd = this.value // assign a variable!!
+            var filtered_data = data.filter(function (d) {
+                          return d["cbwd"] == cbwd;
+                              });
+            arrays.push(filtered_data)
+          }
+          if (this.name == "temp"){
+
+            var lowest = $("#lowest").val();
+            var highest = $("#highest").val();
+            val.push(lowest);
+            console.log(val);
+            // var filtered_data = data.filter(function (d) {
+            //               return d["cbwd"] == cbwd;
+            //                   });
+            // arrays.push(filtered_data)
+          }
        }
     });
 
 // combine all the arrays together
-    for(i=0; i<arrays.length; i++){ 
+    for(i=0; i<arrays.length; i++){
       val = val.concat(arrays[i])
     }
   }
