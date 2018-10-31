@@ -38,15 +38,15 @@
         </div>
         <input type="checkbox" name="windspd" value="windspd" id="windspd" onclick="toggle()"> Wind Speed<br>
         <div class="row centered windspdfilter">
-          Lowest <input type="range" min="1" max="100" value="50" id="wind_lowest"> <span>50</span><br>
-          Highest <input type="range" min="1" max="100" value="50" id="wind_highest"> <span>50</span>
+          Lowest  <input type="range" min="0" max="590" value="0" id="wind_lowest" oninput="sliderChange(this.id)"> <span class="wind_lowest">0</span><br>
+          Highest <input type="range" min="0" max="590" value="400" id="wind_highest" oninput="sliderChange(this.id)"> <span class="wind_highest">400</span>
         </div>
 
         <p>Wind direction</p>
-        <input type="checkbox" name="winddirection" value="NE"> North East
-        <input type="checkbox" name="winddirection" value="NW"> North West
-        <input type="checkbox" name="winddirection" value="SW"> South West
-        <input type="checkbox" name="winddirection" value="SE"> South East
+        <input type="checkbox" class="winddirection" name="winddirection" value="NE"> North East
+        <input type="checkbox" class="winddirection" name="winddirection" value="NW"> North West
+        <input type="checkbox" class="winddirection" name="winddirection" value="SW"> South West
+        <input type="checkbox" class="winddirection" name="winddirection" value="SE"> South East
       </div>
 
     </div>
