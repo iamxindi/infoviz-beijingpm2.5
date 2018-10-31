@@ -3,10 +3,13 @@ $(document).ready(function() {
   drawCircleAnimation();
 });
 
+var val
+
 function loadData() {
   d3.csv("data/data.csv", function(d) {
     data = d;
     // when checkbox changes, update
+    val = data;
     $('input[type=checkbox]').on("change", update);
 
   })
@@ -21,38 +24,46 @@ function sliderChange(id) {
   update();
 }
 
-function update() {
 
-  var val = [];
+
+function update() {
   var arrays = [];
 
   if ($("input:checkbox:checked").length == 0) { // if there's no checked checkbox
     val = data;
   } else { // there is some filters
-
-
-    if (val.length == 0){
+    //if (val.length == 0){
       console.log("update")
       //console.log("filters")
       //add data
       $('input[type=checkbox]').each(function() {
         if (this.checked) {
-          if (this.name == "winddirection") {
-            var cbwd = this.value // assign a variable!!
-            var filtered_data = data.filter(function(d) {
-              return d["cbwd"] == cbwd;
-            });
-            arrays.push(filtered_data)
-            for (i = 0; i < arrays.length; i++) {
-              val = val.concat(arrays[i])
-            }
-          }
+          // if (this.name == "winddirection") {
+          //
+          //   var cbwd = this.value // assign a variable!!
+          //   if ($(".winddirection:checked").length == 1){ // if it the first wind direction selected
+          //     console.log("first wind")
+          //     val = val.filter(function(d) {
+          //       return d["cbwd"] == cbwd;
+          //     });
+          //
+          //   }else{
+          //     filtered_data= val.filter(function(d) {
+          //       return d["cbwd"] == cbwd;
+          //     });
+          //     console.log(filtered_data.length)
+          //     arrays.push(filtered_data)
+          //     for (i = 0; i < arrays.length; i++) {
+          //       val = [].concat(arrays[i])
+          //     }
+          //   }
+          // }
 
           if (this.name == "temp") {
             var lowest = parseInt(document.getElementById("temp_lowest").value)
             var highest = parseInt(document.getElementById("temp_highest").value)
 
-            val = data.filter(function(d) {
+            val = val.filter(function(d) {
               return d["TEMP"]>lowest && d["TEMP"]<highest;
             })
           }
@@ -61,40 +72,43 @@ function update() {
             var lowest = parseInt(document.getElementById("wind_lowest").value)
             var highest = parseInt(document.getElementById("wind_highest").value)
 
-            val = data.filter(function(d) {
+            val = val.filter(function(d) {
               return d["Iws"]> lowest && d["Iws"]< highest;
             })
           }
         }
       })
 
-    }
-    else{
-      console.log("1")
-      //filter val
-      $('input[type=checkbox]').each(function() {
-        if (this.checked) {
-          if (this.name == "winddirection") {
-
-
-          }
-
-          if (this.name == "temp") {
-
-
-          }
-
-          if (this.name == "windspd") {
-
-          }
-        }
-      })
-    }
+//    }
+    // else{
+    //   console.log("1")
+    //   //filter val
+    //   $('input[type=checkbox]').each(function() {
+    //     if (this.checked) {
+    //       if (this.name == "winddirection") {
+    //
+    //
+    //       }
+    //
+    //       if (this.name == "temp") {
+    //
+    //
+    //       }
+    //
+    //       if (this.name == "windspd") {
+    //
+    //       }
+    //     }else{ // unchecked
+    //
+    //     }
+    //   })
+    // }
 
 
 
   }
-  return val
+  console.log(val.length)
+  return val.length
 }
 
 // combine all the arrays together
