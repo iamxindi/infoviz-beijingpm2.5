@@ -1,6 +1,6 @@
 $(document).ready(function() {
   loadData();
-  drawCircleAnimation();
+  wireButtonClickEvents();
 });
 
 var val
@@ -70,7 +70,8 @@ function visualizeChart() {
      .attr("height", 600)
   var g = svg1.append("g").attr("id", "spiralchart");
 
-  d3.select('#spiralchart').selectAll('path')
+  d3.select('#spiralchart')
+  .selectAll('path')
   .data(aggregated_num)
 	.enter()
   .append('svg:path')
@@ -79,13 +80,18 @@ function visualizeChart() {
   	.attr('fill', color)
 	.attr("stroke", "white")
 	.attr("stroke-width", "0.3px")
-	//.on('mouseover', render_hour_info)
-	//.on('mouseout', reset_hour_info);
+	.on('mouseover', function(d,i){
+    console.log(i)
+  });
+//	.on('mouseout', );
 
 
 }
 
+function render_info(){
+  console.log("1")
 
+}
 
 function sliderChange(id) {
   value = document.getElementById(id).value
@@ -191,4 +197,19 @@ function drawCircleAnimation() {
       })
       .on("end", repeat);
   }
+}
+
+function wireButtonClickEvents() {
+
+    d3.selectAll(".button").on("click", function () {
+        //USER_SEX = d3.select(this).attr("data-val");
+        d3.select(".current").classed("current", false);
+        d3.select(this).classed("current", true);
+        //$("#spiralchart").empty();
+        // TODO: find the data item and invoke the visualization function
+    });
+    // RACE
+
+    //AGEGROUP
+
 }
