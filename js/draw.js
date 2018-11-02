@@ -25,16 +25,10 @@ function loadData() {
     // when checkbox changes, update
     val = data;
     visualizeChart(state);
-    drawCircleAnimation();
+    drawCircleAnimation(val);
     $('input[type=checkbox]').on("change", update);
 
   })
-}
-
-function sliderChange(id) {
-  value = document.getElementById(id).value
-  document.getElementsByClassName(id)[0].innerHTML = value
-  update();
 }
 
 function update() {
@@ -49,6 +43,7 @@ function update() {
     console.log("no wind direction")
     val = data;
   } else {
+    val = [];
     $('input[type=checkbox]').each(function() {
       if (this.checked) {
         var cbwd = this.value // assign a variable!!
@@ -58,21 +53,26 @@ function update() {
         arrays.push(filtered_data)
       }
     })
-
     // combine all the arrays together
     for (i = 0; i < arrays.length; i++) {
       val = val.concat(arrays[i])
     }
   }
 
-  console.log(lowest_temp, highest_temp)
-  console.log(lowest_wind, highest_wind)
-  val = data.filter(function(d) {
+  //console.log(val.length)
+
+  // console.log(lowest_temp, highest_temp)
+  // console.log(lowest_wind, highest_wind)
+  val = val.filter(function(d) {
     return d["Iws"] >= lowest_wind && d["Iws"] <= highest_wind && d["TEMP"] >= lowest_temp && d["TEMP"] <= highest_temp;
 
   })
 
-  console.log(val)
+  $("#chart").empty();
+  drawCircleAnimation(val);
+  return val
+
+
 }
 
 function generateSpiralData(state) {
@@ -284,10 +284,6 @@ function slider() {
 }
 
 
-
-
-
-
 function toggle() {
   if ($("#temp").is(":checked")) {
     $(".tempfilter").css("display", "block");
@@ -304,7 +300,13 @@ function toggle() {
 
 }
 
-function drawCircleAnimation() {
+function drawCircleAnimation(circle_data) {
+  circle_pm = []
+  for (i = 0; i < circle_data.length; i++) {
+    circle_pm.push(data[i]["pm2.5"])
+  }
+  console.log(circle_pm)
+
   var svg2 = d3.select("#chart")
     .append("svg")
     .attr("width", 500)
