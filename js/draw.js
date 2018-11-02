@@ -336,32 +336,40 @@ function drawCircleAnimation(circle_data) {
   repeat();
 
   function repeat() {
+    if (circle_pm === undefined || circle_pm.length == 0){
 
-    random_num = Math.random()
-    var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green", "yellow", "#ffb732", "red", "#8b0000"])
-    //circle now is a random number between 0 and val length
-    circle_now = circle_pm[Math.floor(random_num*circle_pm.length)]
-    circle_full_entry = circle_data[circle_now]
-     //console.log(circle_full_entry)
-    year = 2010
-    month = 1
-    date = 10
-    hour = 13
+    }else{
+      var random_num = Math.floor(Math.random()*circle_pm.length)
+      var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green", "yellow", "#ffb732", "red", "#8b0000"])
+      //circle now is a random number between 0 and val length
+      circle_now = circle_pm[random_num]
+      circle_full_entry = circle_data[random_num]
+      //console.log(random_num)
+      // console.log(circle_data.length)
+      year = circle_full_entry["year"]
+      month = month_array[parseInt(circle_full_entry["month"]-1)]
+      date = circle_full_entry["day"]
+      hour = circle_full_entry["hour"]
 
-    circle
-      .transition()
-      .duration(500)
-      .attr('fill', color(circle_now))
-      .attr('r', function(d) {
-        return circle_now/3 + 20
-      })
-      .on("end", repeat);
-    pm
-      .text(circle_now)
-      .attr("color","white")
-    info
-      //.text(month + " " + date+" "+ year + " "+ hour +":00")
-      .text(circle_full_entry[1])
+      circle
+        .transition()
+        .duration(500)
+        .attr('fill', color(circle_now))
+        .attr('r', function(d) {
+          return circle_now/3 + 20
+        })
+        .on("end", repeat);
+      pm
+        .text(circle_now)
+        .attr("color","white")
+
+      info
+        .text(month + " " + date+" "+ year + " "+ hour +":00")
+
+
+    }
+
+
   }
 }
 
