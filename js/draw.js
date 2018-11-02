@@ -86,7 +86,7 @@ function generateSpiralData(state) {
 
   for (i = 0; i < years.length; i++) {
     // for each year, create a separate array
-    year_data = val.filter(function(d) {
+    year_data = data.filter(function(d) {
       return d["year"] == years[i];
     });
 
@@ -303,36 +303,65 @@ function toggle() {
 function drawCircleAnimation(circle_data) {
   circle_pm = []
   for (i = 0; i < circle_data.length; i++) {
-    circle_pm.push(data[i]["pm2.5"])
+    if (isNaN(parseInt(data[i]["pm2.5"])) == false){
+        circle_pm.push(parseInt(data[i]["pm2.5"]))
+    }
   }
   console.log(circle_pm)
+
+
 
   var svg2 = d3.select("#chart")
     .append("svg")
     .attr("width", 500)
-    .attr("height", 300)
+    .attr("height", 500)
     .append("g")
 
   var circle = svg2.append("circle")
     .attr("cx", 250)
-    .attr("cy", 150)
-    .style("fill", "blue")
+    .attr("cy", 200)
+    //.style("fill", "blue")
     .attr("r", 20)
 
   var pm = svg2.append("text")
-    .attr("dx", 250)
-    .attr("dy", 150)
+    .attr("dx", 240)
+    .attr("dy", 200)
     .text("100")
+
+  var info = svg2.append("text")
+    .attr("dx", 200)
+    .attr("dy", 400)
+    .html("2010"+" "+"Jun" + " " + "12" +":00")
 
   repeat();
 
   function repeat() {
+
+    random_num = Math.random()
+    var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green", "yellow", "#ffb732", "red", "#8b0000"])
+    //circle now is a random number between 0 and val length
+    circle_now = circle_pm[Math.floor(random_num*circle_pm.length)]
+    circle_full_entry = circle_data[circle_now]
+     //console.log(circle_full_entry)
+    year = 2010
+    month = 1
+    date = 10
+    hour = 13
+
     circle
       .transition()
+      .duration(500)
+      .attr('fill', color(circle_now))
       .attr('r', function(d) {
-        return Math.random() * 50
+        return circle_now/3 + 20
       })
       .on("end", repeat);
+    pm
+      .text(circle_now)
+      .attr("color","white")
+    info
+      //.text(month + " " + date+" "+ year + " "+ hour +":00")
+      .text(circle_full_entry[1])
   }
 }
 
