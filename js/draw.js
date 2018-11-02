@@ -8,6 +8,7 @@ var season_array = ["Spring", "Summer", "Autumn", "Winter"]
 var state = 1
 var state_text = "Average"
 var path
+var slider_values
 
 
 
@@ -37,41 +38,41 @@ function sliderChange(id) {
 }
 
 function update() {
-  var temp_checked = false;
-  var windspd_checked = false;
-  var winddir_checked = false;
-  var change_filter_type = false
-  var checked = $(this)
-  if (checked == last_checked) {
-    change_filter_type == true;
+  var lowest_temp = slider_values[0]
+  var highest_temp = slider_values[1]
+  var lowest_wind = slider_values[2]
+  var highest_wind = slider_values[3]
+
+  arrays = []
+
+  if ($(".winddirection:checked").length == 0) { // if there's no checked checkbox
+    console.log("no wind direction")
+    val = data;
   } else {
-    change_filter_type == false;
+    $('input[type=checkbox]').each(function() {
+      if (this.checked) {
+        var cbwd = this.value // assign a variable!!
+        var filtered_data = data.filter(function(d) {
+          return d["cbwd"] == cbwd;
+        });
+        arrays.push(filtered_data)
+      }
+    })
+
+    // combine all the arrays together
+    for (i = 0; i < arrays.length; i++) {
+      val = val.concat(arrays[i])
+    }
   }
-  console.log(checked)
-  console.log(last_checked)
-  last_checked = checked
 
+  console.log(lowest_temp, highest_temp)
+  console.log(lowest_wind, highest_wind)
+  val = data.filter(function(d) {
+    return d["Iws"] >= lowest_wind && d["Iws"] <= highest_wind && d["TEMP"] >= lowest_temp && d["TEMP"] <= highest_temp;
 
+  })
 
-  // if ($("input:checkbox:checked").length == 0) { // if there's no checked checkbox
-  //   val = data;
-  // } else {
-  //   if (this.name == "temp") {
-  //     var lowest = parseInt(document.getElementById("temp_lowest").value)
-  //     var highest = parseInt(document.getElementById("temp_highest").value)
-  //     val = val.filter(function(d) {
-  //       return d["TEMP"] > lowest && d["TEMP"] < highest;
-  //     })
-  //   }
-  // }
-  //
-  // if (change filter type) {
-  //
-  // } else {
-  //   // take val
-  //   // filter
-  //   // update second_val
-  // }
+  console.log(val)
 }
 
 function generateSpiralData(state) {
@@ -244,47 +245,47 @@ function slider() {
   $("#slider-temp").slider({
     range: true,
     min: -20,
-    max:42,
+    max: 42,
     values: [-10, 20],
     slide: function(event, ui) {
-      $("#amount-temp").val(ui.values[0] +  "C to " + ui.values[1] + "C");
+      $("#amount-temp").val(ui.values[0] + "C to " + ui.values[1] + "C");
+    },
+    change: function(event, ui) {
+      slider_values[0] = $("#slider-temp").slider("values", 0);
+      slider_values[1] = $("#slider-temp").slider("values", 1);
+      update();
     }
   });
-  $("#amount-temp").val($("#slider-temp").slider("values", 0)
-    +  "C to " + $("#slider-temp").slider("values", 1)+ "C");
+
+  $("#amount-temp").val($("#slider-temp").slider("values", 0) +
+    "C to " + $("#slider-temp").slider("values", 1) + "C");
 
   $("#slider-wind").slider({
     range: true,
     min: 0,
     max: 587,
-    values: [0,300],
+    values: [0, 300],
     slide: function(event, ui) {
       $("#amount-wind").val(ui.values[0] + "m/s to " + ui.values[1] + "m/s");
+    },
+    change: function(event, ui) {
+      slider_values[2] = $("#slider-wind").slider("values", 0);
+      slider_values[3] = $("#slider-wind").slider("values", 1);
+      update();
+
     }
-  });
-  $("#amount-wind").val( $("#slider-wind").slider("values", 0) + "m/s to "
-  + $("#slider-wind").slider("values", 1) + "m/s");
-}
-
-
-
-function updateTemp() {
-  var lowest = parseInt(document.getElementById("temp_lowest").value)
-  var highest = parseInt(document.getElementById("temp_highest").value)
-  val = val.filter(function(d) {
-    val = val.filter(function(d) {
-      return d["TEMP"] > lowest && d["TEMP"] < highest;
-    })
   })
+
+  $("#amount-wind").val($("#slider-wind").slider("values", 0) + "m/s to " +
+    $("#slider-wind").slider("values", 1) + "m/s");
+
+  slider_values = [$("#slider-temp").slider("values", 0), $("#slider-temp").slider("values", 1), $("#slider-wind").slider("values", 0), $("#slider-wind").slider("values", 1)]
+
 }
 
-function updateWindSpeed() {
-  var lowest = parseInt(document.getElementById("wind_lowest").value)
-  var highest = parseInt(document.getElementById("wind_highest").value)
-  val = val.filter(function(d) {
-    return d["Iws"] > lowest && d["Iws"] < highest;
-  })
-}
+
+
+
 
 
 function toggle() {
@@ -333,17 +334,10 @@ function drawCircleAnimation() {
   }
 }
 
-// function updateSpiral(state){
-//   var spiraldata = generateSpiralData(state)
-//   path = path.data(spiraldata) // compute the new angles
-//   path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
-//
-// }
 
 function wireButtonClickEvents() {
 
   d3.selectAll(".button").on("click", function() {
-    //USER_SEX = d3.select(this).attr("data-val");
     d3.select(".current").classed("current", false);
     d3.select(this).classed("current", true);
     state = parseInt($(this).attr('value'))
@@ -352,10 +346,7 @@ function wireButtonClickEvents() {
     $("#spiral").empty();
     visualizeChart(state);
     //drawSpiral();
-    // TODO: find the data item and invoke the visualization function
-  });
-  // RACE
 
-  //AGEGROUP
+  });
 
 }
