@@ -5,7 +5,7 @@ $(document).ready(function() {
 
 var val
 var years = ["2010","2011","2012","2013","2014"]
-var aggregated_pm = []
+
 var state = 1
 
 function loadData() {
@@ -25,6 +25,7 @@ function loadData() {
 
 function visualizeChart() {
   // extract the pm2.5 from all data
+  var aggregated_pm = []
   var pm_data = []
   for (i=0;i<data.length; i++){
     pm_data.push(data[i]["pm2.5"])
@@ -58,7 +59,7 @@ function visualizeChart() {
         year_pm = d3.nest()
         .key(function(d) { return d.month; })
         //.rollup(function(v) { return d3.min(v, function(d) { return d["pm2.5"]; }); })
-        .rollup(function(v) { return d3.sum(v, function(d) { return d["pm2.5"]; }); })
+        .rollup(function(v) { return d3.median(v, function(d) { return parseInt(d["pm2.5"]); }); })
         .entries(year_data);
         break;
     }
@@ -80,7 +81,7 @@ function visualizeChart() {
   const width = 1000 - margin.left - margin.right;
   const height = 400 - margin.top - margin.bottom;
 
-  var color = d3.scaleLinear().domain([0, 800]).range(["white", "red"]);
+  var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green","yellow", "#ffb732", "red", "#8b0000"]);
 
   initial_rad = 100;
   rad_offset = 25;
@@ -102,7 +103,7 @@ function visualizeChart() {
   .append('svg:path')
 	.attr('d', d3.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
 	.attr('transform', 'translate(300, 300)')
-  	.attr('fill', color)
+  .attr('fill', color)
 	.attr("stroke", "white")
 	.attr("stroke-width", "0.3px")
 	.on('mouseover', function(d,i){
@@ -233,7 +234,7 @@ function wireButtonClickEvents() {
         state = parseInt($(this).attr('value'))
         console.log(state)
         $("#spiral").empty();
-        //visualizeChart();
+        visualizeChart();
         // TODO: find the data item and invoke the visualization function
     });
     // RACE
