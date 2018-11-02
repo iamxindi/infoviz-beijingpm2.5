@@ -1,29 +1,29 @@
+// set up global variables
+var val
+var years = ["2010","2011","2012","2013","2014"]
+var state = 1
+var path
+
+
 $(document).ready(function() {
   loadData();
   wireButtonClickEvents();
 });
 
-var val
-var years = ["2010","2011","2012","2013","2014"]
-
-var state = 1
 
 function loadData() {
   d3.csv("data/data.csv", function(d) {
     data = d;
     // when checkbox changes, update
     val = data;
-    visualizeChart();
+    visualizeChart(state);
     drawCircleAnimation();
     //$('input[type=checkbox]').on("change", updateWindDir);
 
   })
 }
 
-// extract pm 2.5 data
-
-
-function visualizeChart() {
+function generateSpiralData(state){
   // extract the pm2.5 from all data
   var aggregated_pm = []
   var pm_data = []
@@ -74,6 +74,12 @@ function visualizeChart() {
   for (i=0;i<aggregated_pm.length;i++){
     all_year_pm.push(aggregated_pm[i]["value"])
   }
+  return all_year_pm
+
+}
+
+
+function visualizeChart() {
 
 
 
@@ -81,7 +87,7 @@ function visualizeChart() {
   const width = 1000 - margin.left - margin.right;
   const height = 400 - margin.top - margin.bottom;
 
-  var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green","yellow", "#ffb732", "red", "#8b0000"]);
+
 
   initial_rad = 100;
   rad_offset = 25;
@@ -95,21 +101,53 @@ function visualizeChart() {
      .attr("width", 800)
      .attr("height", 600)
   var g = svg1.append("g").attr("id", "spiralchart");
+  drawSpiral()
 
-  d3.select('#spiralchart')
-  .selectAll('path')
-  .data(all_year_pm)
-	.enter()
-  .append('svg:path')
-	.attr('d', d3.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
-	.attr('transform', 'translate(300, 300)')
-  .attr('fill', color)
-	.attr("stroke", "white")
-	.attr("stroke-width", "0.3px")
-	.on('mouseover', function(d,i){
-    console.log(i)
-  });
+
+
+
+
+
 //	.on('mouseout', );
+
+
+}
+
+function drawSpiral(){
+  var tooltip = d3.select("body")
+  .append("div")
+  .attr("class", "toolTip");
+  var spiraldata = generateSpiralData(state);
+  var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green","yellow", "#ffb732", "red", "#8b0000"]);
+
+  path = d3.select('#spiralchart')
+  .selectAll('path')
+  .data(spiraldata)
+  .enter()
+  .append('svg:path')
+  .attr('transform', 'translate(380, 300)')
+  .attr('d', d3.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
+  .attr("stroke", "white")
+  .attr("stroke-width", "0.3px")
+  .on('mouseover', function(d,i){
+    tooltip
+      .style("left", d3.event.pageX-10 + "px")
+      .style("top", d3.event.pageY - 30 + "px")
+      .style("position", "absolute")
+      .style("display", "inline-block")
+      .style("background","white")
+      .style("border","1px")
+      .attr("padding",30)
+      .html(parseInt(all_year_pm[i]))
+
+  })
+  .on('mouseout',function(d,i){
+    tooltip
+      .style("display","none")
+  })
+  .transition()
+  .duration(750)
+  .attr('fill', color)
 
 
 }
@@ -225,6 +263,13 @@ function drawCircleAnimation() {
   }
 }
 
+// function updateSpiral(state){
+//   var spiraldata = generateSpiralData(state)
+//   path = path.data(spiraldata) // compute the new angles
+//   path.transition().duration(750).attrTween("d", arcTween); // redraw the arcs
+//
+// }
+
 function wireButtonClickEvents() {
 
     d3.selectAll(".button").on("click", function () {
@@ -233,8 +278,10 @@ function wireButtonClickEvents() {
         d3.select(this).classed("current", true);
         state = parseInt($(this).attr('value'))
         console.log(state)
+        //updateSpiral(state)
         $("#spiral").empty();
-        visualizeChart();
+        visualizeChart(state);
+        //drawSpiral();
         // TODO: find the data item and invoke the visualization function
     });
     // RACE
