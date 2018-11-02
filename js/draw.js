@@ -6,13 +6,15 @@ $(document).ready(function() {
 var val
 var years = ["2010","2011","2012","2013","2014"]
 var aggregated_pm = []
+var state = 1
 
 function loadData() {
   d3.csv("data/data.csv", function(d) {
     data = d;
     // when checkbox changes, update
     val = data;
-    visualizeChart()
+    visualizeChart();
+    drawCircleAnimation();
     //$('input[type=checkbox]').on("change", updateWindDir);
 
   })
@@ -22,31 +24,54 @@ function loadData() {
 
 
 function visualizeChart() {
-
-  pm_data = []
+  // extract the pm2.5 from all data
+  var pm_data = []
   for (i=0;i<data.length; i++){
     pm_data.push(data[i]["pm2.5"])
   }
 
 
   for (i=0;i<years.length;i++){
+    // for each year, create a separate array
     year_data = val.filter(function(d) {
       return d["year"] == years[i];
     });
 
-    var year_pm = d3.nest()
-    .key(function(d) { return d.month; })
-    .rollup(function(v) { return d3.mean(v, function(d) { return d["pm2.5"]; }); })
-    .entries(year_data);
+    var year_pm
 
-    //aggregated_pm.push(year_pm)
+    switch(state) {
+    case 1:
+        year_pm = d3.nest()
+        .key(function(d) { return d.month; })
+        .rollup(function(v) { return d3.mean(v, function(d) { return d["pm2.5"]; }); })
+        .entries(year_data);
+        break;
+
+    case 2:
+        year_pm = d3.nest()
+        .key(function(d) { return d.month; })
+        .rollup(function(v) { return d3.max(v, function(d) { return parseInt(d["pm2.5"]); }); })
+        .entries(year_data);
+        break;
+
+    case 3:
+        year_pm = d3.nest()
+        .key(function(d) { return d.month; })
+        //.rollup(function(v) { return d3.min(v, function(d) { return d["pm2.5"]; }); })
+        .rollup(function(v) { return d3.sum(v, function(d) { return d["pm2.5"]; }); })
+        .entries(year_data);
+        break;
+    }
+
+
+
     aggregated_pm = aggregated_pm.concat(year_pm)
-
   }
-  console.log(aggregated_pm)
-  aggregated_num = []
+
+  //console.log(aggregated_pm)
+  all_year_pm = []
   for (i=0;i<aggregated_pm.length;i++){
-    aggregated_num.push(aggregated_pm[i]["value"])
+    all_year_pm.push(aggregated_pm[i]["value"])
   }
 
 
@@ -55,7 +80,7 @@ function visualizeChart() {
   const width = 1000 - margin.left - margin.right;
   const height = 400 - margin.top - margin.bottom;
 
-  var color = d3.scaleLinear().domain([30, 160]).range(["white", "red"]);
+  var color = d3.scaleLinear().domain([0, 800]).range(["white", "red"]);
 
   initial_rad = 100;
   rad_offset = 25;
@@ -72,7 +97,7 @@ function visualizeChart() {
 
   d3.select('#spiralchart')
   .selectAll('path')
-  .data(aggregated_num)
+  .data(all_year_pm)
 	.enter()
   .append('svg:path')
 	.attr('d', d3.arc().innerRadius(ir).outerRadius(or).startAngle(sa).endAngle(ea))
@@ -205,7 +230,10 @@ function wireButtonClickEvents() {
         //USER_SEX = d3.select(this).attr("data-val");
         d3.select(".current").classed("current", false);
         d3.select(this).classed("current", true);
-        //$("#spiralchart").empty();
+        state = parseInt($(this).attr('value'))
+        console.log(state)
+        $("#spiral").empty();
+        //visualizeChart();
         // TODO: find the data item and invoke the visualization function
     });
     // RACE
