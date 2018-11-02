@@ -2,14 +2,19 @@
 
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 
+
 <head>
+  <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
   <title>PM 2.5 in Beijing 2010 - 2014</title>
   <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
   <link rel="stylesheet" href="css/skeleton.css" />
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" href="css/style.css" />
+  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
+  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+ <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
   <script type="text/javascript" src="js/draw.js"></script>
 </head>
 <body>
@@ -25,38 +30,31 @@
       </div>
     </div>
     <div class="row" id="chart">
-        <div class="ten columns offset-by-one alpha">
-
-        </div>
     </div>
     <div class="row centered">
-      <div id="slider-container">
-       <p>
-        <input type="text" id="amount" style="border: 0; color: #f6931f; font-weight: bold;" />
-      </p>
-      </div>
-      <div class="six columns offset-by-three alpha">
-        <input type="checkbox" name="temp" value="temp" id="temp" onclick="toggle()"> Temperature<br>
-        <div class="row centered tempfilter">
-          Lowest <input type="range" min="-20" max="42" value="-10" id="temp_lowest" oninput="sliderChange(this.id)" onchange="updateTemp()"> <span class="temp_lowest">-10</span><br>
-          Highest <input type="range" min="-20" max="42" value="20" id="temp_highest" oninput="sliderChange(this.id)" onchange="updateTemp()"> <span class="temp_highest">20</span>
-        </div>
-        <input type="checkbox" name="windspd" value="windspd" id="windspd" onclick="toggle()"> Wind Speed<br>
-        <div class="row centered windspdfilter">
-          Lowest  <input type="range" min="0" max="590" value="0" id="wind_lowest" oninput="sliderChange(this.id)" onchange="updateWindSpeed()"> <span class="wind_lowest">0</span><br>
-          Highest <input type="range" min="0" max="590" value="400" id="wind_highest" oninput="sliderChange(this.id)" onchange="updateWindSpeed()"> <span class="wind_highest">400</span>
-        </div>
 
-        <p>Wind direction</p>
+      <div class="six columns offset-by-three alpha">
+
+      <label>Temperature Range</label>
+      <div id="slider-temp"></div>
+      <input type="text" id="amount-temp" readonly style="border:0; color:#f6931f; font-weight:bold;">
+
+      <label>Wind Speed Range</label>
+      <div id="slider-wind"></div>
+      <input type="text" id="amount-wind" readonly style="border:0; color:#f6931f; font-weight:bold;">
+
+      <label>Wind Direction</label>
+
         <input type="checkbox" class="winddirection" name="winddirection" value="NE" onchange="updateWindDir"> North East
         <input type="checkbox" class="winddirection" name="winddirection" value="NW" onchange="updateWindDir"> North West
         <input type="checkbox" class="winddirection" name="winddirection" value="SW" onchange="updateWindDir"> South West
         <input type="checkbox" class="winddirection" name="winddirection" value="SE" onchange="updateWindDir"> South East
+
       </div>
 
 
     <div class="five columns offset-by-four alpha" id="racesimp" style="margin-top:10px;">
-        <h3>Look at</h3>
+        <h3>PM 2.5 monthly</h3>
         <div class="button current" value="1">Average</div>
         <div class="button" value="2">Max</div>
         <div class="button" value="3">Median</div>
