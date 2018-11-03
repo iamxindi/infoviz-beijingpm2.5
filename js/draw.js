@@ -32,6 +32,7 @@ function loadData() {
 }
 
 function update() {
+
   var lowest_temp = slider_values[0]
   var highest_temp = slider_values[1]
   var lowest_wind = slider_values[2]
@@ -70,6 +71,8 @@ function update() {
 
   $("#chart").empty();
   drawCircleAnimation(val);
+
+
   return val
 
 
@@ -301,14 +304,14 @@ function toggle() {
 }
 
 function drawCircleAnimation(circle_data) {
+
   circle_pm = []
   for (i = 0; i < circle_data.length; i++) {
-    if (isNaN(parseInt(data[i]["pm2.5"])) == false){
-        circle_pm.push(parseInt(data[i]["pm2.5"]))
+    if (isNaN(parseInt(data[i]["pm2.5"])) == false) {
+      circle_pm.push(parseInt(data[i]["pm2.5"]))
     }
   }
   console.log(circle_pm)
-
 
 
   var svg2 = d3.select("#chart")
@@ -331,15 +334,74 @@ function drawCircleAnimation(circle_data) {
   var info = svg2.append("text")
     .attr("dx", 200)
     .attr("dy", 400)
-    .html("2010"+" "+"Jun" + " " + "12" +":00")
+    .html("2010" + " " + "Jun" + " " + "12" + ":00")
+
+  var svg3 = d3.select("#chart")
+    .append("svg")
+    .attr("width", 300)
+    .attr("height", 500)
+
+var margin = { top: 30, right: 60, bottom: 30, left: 60 },
+width = 300 - margin.left - margin.right,
+height = 500 - margin.top - margin.bottom;
+
+
+
+
+  count_good = 0;
+  count_bad = 0;
+  threshold = 100;
+  for (i=0;i<circle_pm.length;i++){
+    if (circle_pm[i]<=threshold){
+      count_good+= 1
+    }else{
+      count_bad+= 1
+    }
+  }
+ hist_data = [count_good, count_bad]
+ console.log(hist_data)
+
+
+  var x = d3.scaleBand()
+.domain(hist_data.map(function (d,i) { return i; }))
+.range([0, width])
+.padding(0.1);
+
+var y = d3.scaleLinear()
+.domain([0, d3.max(hist_data, function (d) { return d; })])
+.range([height-20, 0]);
+
+var color2 = d3.scaleLinear().domain([0, threshold, 500]).range(["white","yellow","red"])
+
+
+  bar = svg3.append("g")
+      .selectAll("rect")
+      .data(hist_data)
+      .enter().append("rect")
+      .attr("fill", function(d,i){
+        if (i==0){
+          return "green"
+        }else if(i==1){
+          return "red"
+        }
+      })
+      .attr("class", "bar")
+      //.attr("fill", "#E0D22E")
+      .attr("x", function (d,i) { return x(i) ; })
+      .attr("width", x.bandwidth()-20)
+      .attr("y", function (d) { return y(d) })
+      //y(d.value)
+      .attr("height", function (d) { return (height - y(d)) });
+      //height - y(d.value)
+
 
   repeat();
 
   function repeat() {
-    if (circle_pm === undefined || circle_pm.length == 0){
+    if (circle_pm === undefined || circle_pm.length == 0) {
 
-    }else{
-      var random_num = Math.floor(Math.random()*circle_pm.length)
+    } else {
+      var random_num = Math.floor(Math.random() * circle_pm.length)
       var color = d3.scaleLinear().domain([0, 100, 200, 500, 800]).range(["green", "yellow", "#ffb732", "red", "#8b0000"])
       //circle now is a random number between 0 and val length
       circle_now = circle_pm[random_num]
@@ -347,7 +409,7 @@ function drawCircleAnimation(circle_data) {
       //console.log(random_num)
       // console.log(circle_data.length)
       year = circle_full_entry["year"]
-      month = month_array[parseInt(circle_full_entry["month"]-1)]
+      month = month_array[parseInt(circle_full_entry["month"] - 1)]
       date = circle_full_entry["day"]
       hour = circle_full_entry["hour"]
 
@@ -356,21 +418,21 @@ function drawCircleAnimation(circle_data) {
         .duration(500)
         .attr('fill', color(circle_now))
         .attr('r', function(d) {
-          return circle_now/3 + 20
+          return circle_now / 3 + 20
         })
         .on("end", repeat);
       pm
         .text(circle_now)
-        .attr("color","white")
+        .attr("color", "white")
 
       info
-        .text(month + " " + date+" "+ year + " "+ hour +":00")
-
+        .text(month + " " + date + " " + year + " " + hour + ":00")
 
     }
-
-
   }
+
+
+
 }
 
 

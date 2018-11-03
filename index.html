@@ -5,12 +5,13 @@
 
 <head>
   <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
-  <title>PM 2.5 in Beijing 2010 - 2014</title>
+  <title>SI 649 Individual Project Xindi Wang</title>
   <link href='https://fonts.googleapis.com/css?family=Inconsolata' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
   <link rel="stylesheet" href="css/skeleton.css" />
   <link rel="stylesheet" href="css/normalize.css" />
   <link rel="stylesheet" href="css/style.css" />
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
   <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
   <script src="https://d3js.org/d3.v4.min.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
@@ -19,22 +20,34 @@
 </head>
 <body>
   <div class="container">
-    <div class="row centered">
-      <div class="nine columns offset-by-two alpha">
-        <h1>Learn about PM 2.5 in Beijing 2010 - 2014</h1>
-      </div>
+    <div class="row centered title" style="padding-top: 100px; padding-bottom: 40px">
+
+        <h1>Explore pattern and factors of PM 2.5 in Beijing 2010 - 2014</h1>
+
     </div>
-    <div class="row centered">
-      <div class="six columns offset-by-three alpha">
-       <p class="desc centered">some description</p>
-      </div>
+    <div class="row centered" style="padding-bottom: 40px;">
+
+       <p>Since year 2010, pm 2.5 has become the most concerned environmental topic in Beijing.<br>
+     This visualization uses data from Beijing PM2.5 Data Data Set (https://archive.ics.uci.edu/ml/datasets/Beijing+PM2.5+Data). <br>
+     The purpose of this visualization is to show the time pattern and influence of different factors to the value of pm 2.5 in Beijing. </p>
+
     </div>
-    <div class="row centered" id="chart">
+
+    <div class="row centered" id="chart" >
+    <h5>PART I: Temperature and wind simulator</h5>
+    <div class="row centered" style="padding-bottom: 40px; padding-left:10%; padding-right:10%;">
+
+       <p>In this section, you can play with different options in temperature, wind speed and wind direction and see how it changes the pattern of pm2.5. <br><br>
+         <strong>*How to use this visualization?*</strong><br>
+         The animation on the left is a looped animation showing all the pm2.5 instances that correspond to the setting at a random order. <br>The bar chart on the right compares the ratio of "good" hours and "bad" hours. </p>
+
     </div>
-    <div class="row centered">
+    </div>
+    <div class="row centered" style="padding-bottom: 100px;">
 
       <div class="six columns offset-by-three alpha">
-      <h5>Configuration</h5>
+      <h6>CONFIGURATION</h6>
+      <!-- <p>(number of instances: <span>0</span id="ins_num">)<p> -->
 
       <label>Temperature Range</label>
       <div id="slider-temp"></div>
@@ -54,14 +67,37 @@
       </div>
 
 
-    <div class="five columns offset-by-four alpha" id="racesimp" style="margin-top:10px;">
-        <h2>PM 2.5 monthly</h2>
-        <div class="button current" value="1">Average</div>
-        <div class="button" value="2">Max</div>
-        <div class="button" value="3">Median</div>
+
+  </div>
+
+  <div class="row centered" >
+    <h5>PART II: PM 2.5 Spiral Chart</h5>
+    <div class="row centered">
+
+       <p>In this section, you can see a color coded summary of pm2.5 for each month in 2010-2014. The statistic is calculated using hourly data. <br><br>
+         <strong>*How to use this visualization?*</strong><br>
+        1. Click on one of the button to change the summary statistic option. <br>
+        2. Hover on the chart to see detail information. </p><br>
+         <strong>*How to interpret the colors?*</strong><br>
+         Green to yellowish: under 100<br>
+         Yellow to orange: 100-200<br>
+         Orange to red: 200-500<br>
+         Darker red: 500+
+         </p>
+
+
+
+
+    </div>
+    <div style="padding-left:45%">
+
+      <div class="button current" value="1">Average</div>
+      <div class="button" value="2">Max</div>
+      <div class="button" value="3">Median</div>
     </div>
   </div>
   <div class="row centered" id="spiral">
+
 
   </div>
 
