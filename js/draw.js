@@ -60,18 +60,13 @@ function update() {
     }
   }
 
-  //console.log(val.length)
-
-  // console.log(lowest_temp, highest_temp)
-  // console.log(lowest_wind, highest_wind)
   val = val.filter(function(d) {
-    return d["Iws"] >= lowest_wind && d["Iws"] <= highest_wind && d["TEMP"] >= lowest_temp && d["TEMP"] <= highest_temp;
+    return d["Iws"] >= lowest_wind && d["Iws"] <= highest_wind && d["TEMP"] >= lowest_temp && d["TEMP"] <= highest_temp && (typeof d !== "undefined");
 
   })
 
   $("#chart").empty();
   drawCircleAnimation(val);
-
 
   return val
 
@@ -193,6 +188,26 @@ function visualizeChart() {
     .attr("width", 800)
     .attr("height", 600)
   var g = svg1.append("g").attr("id", "spiralchart");
+
+  //Labels
+
+  var label_rad = 106;
+  for (var i = 0; i < 5; i++) {
+    label = years[i];
+    label_angle = 30;
+    svg1.append("def")
+      .append("path")
+      .attr("id", "day_path" + i)
+      .attr("d", "M300 295 m" + label_rad * Math.cos(label_angle) + " " + label_rad * Math.sin(label_angle) + " A" + label_rad + " " + label_rad + " 90 0 1 " + (300 + label_rad) + " 300");
+    svg1.append("text")
+      .attr("class", "day label")
+      .style("fill","black")
+      .append("textPath")
+      .attr("xlink:href", "#day_path" + i)
+      .text(label);
+    label_rad += rad_offset;
+  }
+
   drawSpiral()
 
 
@@ -220,9 +235,6 @@ function drawSpiral() {
       d3.select(this).attr("opacity", "0.7")
       year = parseInt((i) / 12) + 2010
       month = month_array[i % 12]
-      // if ((i%12) >=2 && (i%12) <5){
-      //   season = "Spring"
-      // }
       tooltip
         .style("left", d3.event.pageX - 20 + "px")
         .style("top", d3.event.pageY - 88 + "px")
@@ -307,8 +319,8 @@ function drawCircleAnimation(circle_data) {
 
   circle_pm = []
   for (i = 0; i < circle_data.length; i++) {
-    if (isNaN(parseInt(data[i]["pm2.5"])) == false) {
-      circle_pm.push(parseInt(data[i]["pm2.5"]))
+    if (isNaN(parseInt(circle_data[i]["pm2.5"])) == false) {
+      circle_pm.push(parseInt(circle_data[i]["pm2.5"]))
     }
   }
   console.log(circle_pm)
@@ -341,9 +353,14 @@ function drawCircleAnimation(circle_data) {
     .attr("width", 300)
     .attr("height", 500)
 
-var margin = { top: 30, right: 60, bottom: 30, left: 60 },
-width = 300 - margin.left - margin.right,
-height = 500 - margin.top - margin.bottom;
+  var margin = {
+      top: 30,
+      right: 60,
+      bottom: 30,
+      left: 60
+    },
+    width = 300 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
 
 
 
@@ -351,48 +368,71 @@ height = 500 - margin.top - margin.bottom;
   count_good = 0;
   count_bad = 0;
   threshold = 100;
-  for (i=0;i<circle_pm.length;i++){
-    if (circle_pm[i]<=threshold){
-      count_good+= 1
-    }else{
-      count_bad+= 1
+  for (i = 0; i < circle_pm.length; i++) {
+    if (circle_pm[i] <= threshold) {
+      count_good += 1
+    } else {
+      count_bad += 1
     }
   }
- hist_data = [count_good, count_bad]
- console.log(hist_data)
+  hist_data = [count_good, count_bad]
+  //console.log(circle_pm.length, circle_data.length)
+  console.log(hist_data)
 
 
   var x = d3.scaleBand()
-.domain(hist_data.map(function (d,i) { return i; }))
-.range([0, width])
-.padding(0.1);
+    .domain(hist_data.map(function(d, i) {
+      return i;
+    }))
+    .range([0, width])
+    .padding(0.1);
 
-var y = d3.scaleLinear()
-.domain([0, d3.max(hist_data, function (d) { return d; })])
-.range([height-20, 0]);
+  var y = d3.scaleLinear()
+    .domain([0, 40000])
+    .range([height,0]);
 
-var color2 = d3.scaleLinear().domain([0, threshold, 500]).range(["white","yellow","red"])
+  var color2 = d3.scaleLinear().domain([0, threshold, 500]).range(["white", "yellow", "red"])
 
 
   bar = svg3.append("g")
-      .selectAll("rect")
-      .data(hist_data)
-      .enter().append("rect")
-      .attr("fill", function(d,i){
-        if (i==0){
-          return "green"
-        }else if(i==1){
-          return "red"
-        }
-      })
-      .attr("class", "bar")
-      //.attr("fill", "#E0D22E")
-      .attr("x", function (d,i) { return x(i) ; })
-      .attr("width", x.bandwidth()-20)
-      .attr("y", function (d) { return y(d) })
-      //y(d.value)
-      .attr("height", function (d) { return (height - y(d)) });
-      //height - y(d.value)
+    .selectAll("rect")
+    .data(hist_data)
+    .enter().append("rect")
+    .attr("fill", function(d, i) {
+      if (i == 0) {
+        return "green"
+      } else if (i == 1) {
+        return "red"
+      }
+    })
+    .attr("opacity","0.7")
+    .attr("class", "bar")
+    //.attr("fill", "#E0D22E")
+    .attr("x", function(d, i) {
+      return x(i);
+    })
+    .attr("width", x.bandwidth() - 20)
+    .attr("y", function(d) {
+      return y(d)
+    })
+    //y(d.value)
+    .attr("height", function(d) {
+      return (height - y(d))
+    });
+
+  bar
+  .append("text")
+  .attr("x", function(d, i) {
+    return x(i);
+  })
+  .attr("y", function(d) {
+    return 300
+  })
+  .attr("dy", ".35em")
+  .text(function(d) {
+    return d
+  });
+
 
 
   repeat();
@@ -406,8 +446,7 @@ var color2 = d3.scaleLinear().domain([0, threshold, 500]).range(["white","yellow
       //circle now is a random number between 0 and val length
       circle_now = circle_pm[random_num]
       circle_full_entry = circle_data[random_num]
-      //console.log(random_num)
-      // console.log(circle_data.length)
+      console.log(circle_data.length>circle_pm.length)
       year = circle_full_entry["year"]
       month = month_array[parseInt(circle_full_entry["month"] - 1)]
       date = circle_full_entry["day"]
